@@ -12,7 +12,7 @@
       throw new Error(data);
     }
   }
-  
+  console.log(process.env.BASE_API_URL)
 </script>
 
 

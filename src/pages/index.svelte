@@ -4,7 +4,7 @@
     metatags.description = 'Description coming soon...'
 </script>
 
-<h1>This is the landing page</h1>
+<h1>Tortoise Media ThinkIns</h1>
 
 <h2>See all the availble ThinkIns</h2>
 

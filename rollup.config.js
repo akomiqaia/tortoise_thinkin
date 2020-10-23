@@ -2,6 +2,10 @@ import { createRollupConfigs } from './scripts/base.config.js'
 import autoPreprocess from 'svelte-preprocess'
 import postcssImport from 'postcss-import'
 
+import dotenv from 'dotenv';
+import replace from '@rollup/plugin-replace';
+
+dotenv.config()
 const production = !process.env.ROLLUP_WATCH;
 
 export const config = {
@@ -10,7 +14,19 @@ export const config = {
   buildDir: `dist/build`,
   serve: !production,
   production,
-  rollupWrapper: rollup => rollup,
+  rollupWrapper: rollup => {
+    rollup.plugins = [
+      ...rollup.plugins,
+      replace({
+        process: JSON.stringify({
+          env: {
+            BASE_API_URL: process.env.BASE_API_URL,
+            NODE_ENV: process.env.NODE_ENV
+          }
+        }),
+      }),
+    ]
+  },
   svelteWrapper: svelte => {
     svelte.preprocess = [
       autoPreprocess({

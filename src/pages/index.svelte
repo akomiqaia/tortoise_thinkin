@@ -8,4 +8,4 @@
 
 <h2>See all the availble ThinkIns</h2>
 
-<a href={$url(`/room`)}>Show me ThinkIns</a>
+<a href={$url(`/rooms`)}>Show me ThinkIns</a>

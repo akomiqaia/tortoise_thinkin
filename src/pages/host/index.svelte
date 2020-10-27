@@ -1,9 +1,11 @@
 <script>
     import { url } from '@sveltech/routify'
-    let sessionsList = fetchSessionData();
+    let sessionsList = fetchData("/rooms");
+
+    let archive_list = fetchData("/archives")
   
-  async function fetchSessionData() {
-    const res = await fetch(`${process.env.BASE_API_URL}/rooms`);
+  async function fetchData(url) {
+    const res = await fetch(`${process.env.BASE_API_URL}${url}`);
     const data = await res.json();
 
     if (res.ok) {
@@ -12,6 +14,9 @@
       throw new Error(data);
     }
   }
+
+
+
 </script>
 
 
@@ -34,6 +39,14 @@
     </li>
     {/each}
     {/await}
+
+
     <h1>List of Recordings</h1>
-    
+    {#await archive_list then { archives }}
+    {#each archives as archive}
+    <li>
+      <a href={$url(`https://tortoisearchive.s3.eu-west-2.amazonaws.com/46958944/${archive.id}/archive.mp4`)} target="_blank">Archive name - {archive.name}, Duration - {archive.duration} seconds</a>
+    </li>
+    {/each}
+    {/await}
   </div>

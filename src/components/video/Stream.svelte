@@ -14,7 +14,7 @@
           alert(error.message);
         }
       }
-      // (optional) add server code here
+     
   
       function initializeSession() {
         var session = OT.initSession(apiKey, sessionId);
@@ -60,8 +60,8 @@
   <style>
     .videos {
       position: relative;
-      width: 70vw;
-      height: 70vh;
+      width: 100%;
+      height: 100%;
       margin-left: auto;
       margin-right: auto;
     }
@@ -77,8 +77,10 @@
   
     .publisher {
       position: absolute;
-      width: 360px;
-      height: 240px;
+      width: 20%;
+      height: 40%;
+      max-width: 360px;
+      max-height: 240px;
       bottom: 10px;
       left: 10px;
       z-index: 100;

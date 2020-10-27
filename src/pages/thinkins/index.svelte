@@ -1,0 +1,1 @@
+<h1>Place to create new thinkins</h1>

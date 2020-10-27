@@ -1,6 +1,13 @@
 <script>
-  import Stream from "../../../components/video/Stream.svelte";
   import { params } from "@sveltech/routify";
+
+  import Stream from "../../../components/video/Stream.svelte";
+
+  let state = {
+    recording: false,
+    recordingOptions: {},
+    archiveId: null,
+  };
 
   let sessionData = fetchSessionData();
 
@@ -10,16 +17,49 @@
 
     if (res.ok) {
       console.log(data);
+      state.recordingOptions.sessionId = data.sessionId;
       return data;
     } else {
       throw new Error(data);
     }
   }
 
-  let recording = false
   function handleRecording() {
-    recording = !recording
-    console.log(`recording state is ${recording}`)
+    state.recording = !state.recording;
+
+    if (state.recording) {
+      state.recordingOptions = {
+        ...state.recordingOptions,
+        hasAudio: true,
+        hasVideo: true,
+        archiveName: $params.name,
+        outputMode: "composed",
+      };
+      console.log("Recording started");
+
+      fetch(`${process.env.BASE_API_URL}/startrecording`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(state.recordingOptions),
+      })
+        .then((data) => data.json())
+        .then((data) => {
+          console.log("Archive Data from server", data.archive.id);
+          return state.archiveId = data.archive.id
+        });
+
+      console.log("state after post", state);
+    } else {
+      if (state.archiveId) {
+        fetch(`${process.env.BASE_API_URL}/stoprecording/${state.archiveId}`);
+        console.log("recording stopped");
+        console.log(state);
+      } else {
+        console.log("there was an error");
+      }
+    }
   }
 </script>
 
@@ -59,8 +99,6 @@
   }
 </style>
 
-
-
 <div class="parent">
   <div class="header">ThinkIns - {$params.name}</div>
   <div class="participants">Participants</div>
@@ -72,12 +110,7 @@
   <div class="chat">Chat</div>
   <div class="clips">Clips</div>
   <div class="footer">
-    <button on:click={handleRecording}>{recording ? 'Stop Recording' : 'Start Recording'}</button>
+    <button
+      on:click={handleRecording}>{state.recording ? 'Stop Recording' : 'Start Recording'}</button>
   </div>
 </div>
-
-{#await sessionData then { sessionId, token, apiKey }}
-  <!-- <p>{token}</p> -->
-  <p>{sessionId}</p>
-  <p>{apiKey}</p>
-{/await}
